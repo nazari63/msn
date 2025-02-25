@@ -52,4 +52,27 @@ contract MSNToken is IERC20 {
         emit Transfer(sender, recipient, amount);
         return true;
     }
+
+    // Functions to increase or decrease allowance
+    function increaseAllowance(address spender, uint addedValue) public returns (bool) {
+        allowance[msg.sender][spender] += addedValue;
+        emit Approval(msg.sender, spender, allowance[msg.sender][spender]);
+        return true;
+    }
+
+    function decreaseAllowance(address spender, uint subtractedValue) public returns (bool) {
+        require(subtractedValue <= allowance[msg.sender][spender], "Decreased allowance below zero");
+        allowance[msg.sender][spender] -= subtractedValue;
+        emit Approval(msg.sender, spender, allowance[msg.sender][spender]);
+        return true;
+    }
+
+    // Function to check if address is a contract
+    function isContract(address account) private view returns (bool) {
+        uint256 size;
+        assembly {
+            size := extcodesize(account)
+        }
+        return size > 0;
+    }
 }
